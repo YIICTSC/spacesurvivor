@@ -695,24 +695,7 @@
             fill: none;
             stroke-width: 3;
         }
-    
-.mobile-item-button {
-    background: rgba(255, 136, 0, 0.2);
-    border: 2px solid #ff8800;
-    color: #ff8800;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-family: 'Courier New', monospace;
-    text-align: center;
-    cursor: pointer;
-}
-.mobile-item-button:active {
-    background: rgba(255, 136, 0, 0.4);
-    transform: scale(0.95);
-}
-
-</style>
+    </style>
 </head>
 <body>
     <div id="gameContainer">
@@ -1075,19 +1058,7 @@
         
         <div id="fireControls">
             <button id="fireBtn" class="control-btn" data-key="Space">射撃</button>
-        
-<!-- モバイル用 アイテム使用ボタン -->
-<div id="mobileItemButtons" style="
-    position: absolute;
-    bottom: 120px;
-    right: 20px;
-    z-index: 15;
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-"></div>
-
-</div>
+        </div>
     </div>
 
     <script>
@@ -1330,16 +1301,6 @@
                     document.getElementById('commLog').style.display = 'none';
                 }
                 
-                
-// モバイルアイテムボタン表示切り替え
-if (this.isMobile() && (this.gameMode === 'turnbased' || this.gameMode === 'strategy')) {
-    document.getElementById('mobileItemButtons').style.display = 'flex';
-    this.updateMobileItemButtons();
-} else {
-    document.getElementById('mobileItemButtons').style.display = 'none';
-}
-
-
                 // ゲーム中は操作説明ボタンを表示
                 if (this.gameState === 'playing') {
                     document.getElementById('helpButton').style.display = 'block';
@@ -1355,6 +1316,7 @@ if (this.isMobile() && (this.gameMode === 'turnbased' || this.gameMode === 'stra
             }
             
             showInstructions() {
+                if (this.gameState === 'playing') this.gameState = 'paused';
                 document.getElementById('instructionsScreen').style.display = 'block';
                 // ゲーム中の場合は一時停止
                 if (this.gameState === 'playing') {
@@ -1375,20 +1337,16 @@ if (this.isMobile() && (this.gameMode === 'turnbased' || this.gameMode === 'stra
             }
             
             
-updateMobileItemButtons() {
-    const container = document.getElementById('mobileItemButtons');
-    container.innerHTML = '';
-
-    if (this.inventory.explosion > 0) {
-        const btn = document.createElement('div');
-        btn.className = 'mobile-item-button';
-        btn.textContent = `💥 エクスプロージョン (${this.inventory.explosion})`;
-        btn.onclick = () => {
-            this.useInventoryItem('explosion');
-            this.updateMobileItemButtons();
-        };
-        container.appendChild(btn);
+applyActiveEffects() {
+    // スピードアップ処理
+    if (this.mapEffects.rapidFire && this.mapEffects.rapidFire.active) {
+        this.player.speed = this.isMobile() ? 6 : 7;
+    } else {
+        this.player.speed = this.isMobile() ? 4 : 5;
     }
+
+    // 無敵状態フラグ
+    this.player.invincible = this.mapEffects.invincible && this.mapEffects.invincible.active;
 }
 
 
@@ -1931,6 +1889,7 @@ updateMobileItemButtons() {
                 });
                 
                 this.updatePlayer();
+                this.applyActiveEffects && this.applyActiveEffects();
                 this.updateBullets();
                 this.updateEnemies();
                 this.updateExplosions();
