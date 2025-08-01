@@ -33,13 +33,23 @@
       padding: 10px;
     }
     #fireControls {
-      bottom: 20px;
-      left: 10px;
-      right: 10px;
-    }
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
     #mobileItemButtons {
       right: 10px;
       bottom: 100px;
+    }
+  }
+    #fireBtn {
+      width: 56px;
+      height: 56px;
+      font-size: 16px;
     }
   }
   #fullscreenBtn {
@@ -680,14 +690,18 @@
             margin-bottom: 20px;
         }
         
-        #fireBtn {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 0, 0.2);
-            border-color: #ffff00;
-            color: #ffff00;
-            font-size: 16px;
-        }
+        #fireBtn  {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: rgba(255, 80, 80, 0.9);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    touch-action: manipulation;
+  }
         
         #fireBtn:active {
             background: rgba(255, 255, 0, 0.4);
